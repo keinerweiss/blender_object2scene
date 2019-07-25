@@ -6,11 +6,13 @@
 blender -b "/path/to/model_setup.blend" -P "/path/to/insert_model.py" -o "/path/to/my_output" -E BLENDER_EEVEE -F JPEG -f 1 -- "/path/to/model.dae"
 ```
 
+![The result](/my_output0001.jpg)
+
 ## What does it do
 
 1. Run in background, do not open a blender window
 1. Open the base file "model_setup.blend".
-  * This is the scene setup with lighting and shit
+	* This is the scene setup with lighting and shit
 1. Run insert_model.py on th scene.
 	* Inserts and positions the new model
 1. Outputs to /path/to/my_output0001.jpg
