@@ -8,7 +8,8 @@ try:
 except:
     pass
 
-MODEL_FILE = "C:\\Users\\ruedi\\3D Objects\\object_preview_2\\teeth.dae"
+MODEL_FILE = "C:\\path\\to\\models\\teeth.dae"
+MODEL_ROTATE = 0
 MODEL_FLIP = 0
 
 script = bpy.data.texts["MODEL_SETUP_CONFIG"]
@@ -20,7 +21,9 @@ if len(argv):
 if len(argv)>1:
     # handle flip=90
     MODEL_FLIP = 0 if argv[1][0:4] != 'flip' else int(argv[1][5:])
-
+if len(argv)>2:
+    # handle rotate=90
+    MODEL_ROTATE = 0 if argv[2][0:4] != 'rotate' else int(argv[1][5:])
 
 objs = bpy.data.objects
 mats = bpy.data.materials
@@ -92,10 +95,20 @@ def demoBoundingBox(model):
 
 if model:
     model.select_set(True)
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+    # rotate before applying cube dimensions
+    if MODEL_ROTATE>0:
+        model.rotation_euler = mathutils.Vector((0.0, 0.0, math.radians(MODEL_ROTATE)))
+    if MODEL_FLIP>0:
+        model.rotation_euler = mathutils.Vector((math.radians(MODEL_FLIP), 0.0, 0.0))
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+	# object_add() results in invalid context
+    """
     if MODEL_SETUP_CONFIG["physics"]:
         bpy.ops.rigidbody.object_add()
         bpy.context.object.rigid_body.type = 'ACTIVE'
         bpy.context.object.rigid_body.collision_shape = 'MESH'
+    """
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
     targetLocation = MODEL_SETUP_CONFIG["position"]
     targetBoundingbox = MODEL_SETUP_CONFIG["boundariesBox"]
@@ -104,7 +117,6 @@ if model:
     constraintCT.target = simpleRef
     applyNormalizedBoundingBox(targetBoundingbox, simpleRef)
     simpleRef.location = mathutils.Vector((targetLocation.x, targetLocation.y, simpleRef.dimensions.z/2*simpleRef.scale.z))
-    if MODEL_FLIP>0:
-        simpleRef.rotation_euler = mathutils.Vector((0.0, 0.0, math.radians(MODEL_FLIP)))
+    
     model.data.materials.append( bpy.data.materials.get(MODEL_SETUP_CONFIG["material"]) )
     model.active_material = bpy.data.materials.get(MODEL_SETUP_CONFIG["material"])

@@ -3,7 +3,7 @@
 ## How to execute:
 
 ```
-blender -b "/path/to/model_setup.blend" -P "/path/to/insert_model.py" -o "/path/to/my_output" -E BLENDER_EEVEE -F JPEG -f 1 -- "/path/to/model.dae"
+blender -b "/path/to/model_setup.blend" -P "/path/to/insert_model.py" -o "/path/to/my_output" -E BLENDER_EEVEE -F JPEG -f 1 -- "/path/to/model.dae" flip=0 rotate=0
 ```
 
 ![The result](/my_output0001.jpg)
@@ -19,15 +19,17 @@ blender -b "/path/to/model_setup.blend" -P "/path/to/insert_model.py" -o "/path/
 1. Uses the Eevee engine to render (quick)
 	* Can also be CYCLES (raytracing, slow)
 1. Outputs jpg. Other formats possible
-1. Will render the first frame
-1. After "--" two strings can follow:
+1. Will render the first frame (of 100 frames of a camera circle)
+1. After "--" three parameters have to follow:
 	1: model file
-	1: scene file
+	1: flip=<X flip in degree>
+	1: rotate=<Z rotation in degree>
 
 ## What the script does:
 
 1. Read the configuration from the setup blend file
 1. Remove everything that is not a mesh (one mesh expected) from the newly imported things
+1. Flip & Rotate the model mesh via parameters
 1. Create a bounding box around the object and link its properties to the model mesh
 	* Location and Scale of the model is copied from the bounding box via Contraint
 1. The bounding box is scaled and put in position according to the camera viewport best fit (from configuration)
