@@ -23,7 +23,7 @@ if len(argv)>1:
     MODEL_FLIP = 0 if argv[1][0:4] != 'flip' else int(argv[1][5:])
 if len(argv)>2:
     # handle rotate=90
-    MODEL_ROTATE = 0 if argv[2][0:4] != 'rotate' else int(argv[1][5:])
+    MODEL_ROTATE = 0 if argv[2][0:6] != 'rotate' else int(argv[2][7:])
 
 objs = bpy.data.objects
 mats = bpy.data.materials
@@ -101,6 +101,8 @@ if model:
         model.rotation_euler = mathutils.Vector((0.0, 0.0, math.radians(MODEL_ROTATE)))
     if MODEL_FLIP>0:
         model.rotation_euler = mathutils.Vector((math.radians(MODEL_FLIP), 0.0, 0.0))
+    if (MODEL_ROTATE>0 and MODEL_FLIP>0):
+        model.rotation_euler = mathutils.Vector((math.radians(MODEL_FLIP), 0.0, math.radians(MODEL_ROTATE)))
     bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
 	# object_add() results in invalid context
     """
